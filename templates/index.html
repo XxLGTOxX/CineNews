@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineNews</title>
+    <style>
+        /* Los estilos originales se mantienen */
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #e74c3c;
+            --light-bg: #f8f9fa;
+            --dark-text: #333;
+            --light-text: #fff;
+            --card-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: var(--light-bg);
+            color: var(--dark-text);
+            line-height: 1.6;
+        }
+        header {
+            background-color: var(--primary-color);
+            color: var(--light-text);
+            padding: 1rem 0;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        .logo span {
+            color: var(--accent-color);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid var(--accent-color);
+            color: var(--primary-color);
+        }
+        .region-badge {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-left: 1rem;
+        }
+        .movies-grid, .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        .movie-card, .news-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .movie-card:hover, .news-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+        .movie-image, .news-image {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+        }
+        .card-content {
+            padding: 1.5rem;
+        }
+        .card-title {
+            font-size: 1.3rem;
+            margin-bottom: 0.8rem;
+            color: var(--primary-color);
+        }
+        .card-overview {
+            color: #666;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 2rem;
+        }
+        .pagination-btn {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            margin: 0 0.5rem;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+        .pagination-btn:hover {
+            background-color: var(--accent-color);
+        }
+        footer {
+            background-color: var(--primary-color);
+            color: var(--light-text);
+            text-align: center;
+            padding: 2rem 0;
+        }        
+        #back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--primary-color);
+            color: var(--light-text);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: none; /* Oculto por defecto */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: opacity 0.3s;
+        }
+        #back-to-top:hover {
+            background-color: var(--accent-color);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="/" class="logo" style="text-decoration: none; color: inherit;">Cine<span>News</span></a>
+    </header>
+    
+    <main class="container">
+        <!-- Buscador de películas -->
+        <form method="GET" action="/search" style="display: flex; gap: 1rem; margin-bottom: 2rem;">
+            <input type="text" name="query" placeholder="Buscar películas..." required style="flex: 1; padding: 0.8rem; border: 1px solid #ccc; border-radius: 5px; font-size: 1rem;">
+            <button type="submit" style="background-color: var(--primary-color); color: white; padding: 0.8rem 1.5rem; border: none; border-radius: 5px; font-size: 1rem; cursor: pointer; transition: background-color 0.3s;">Buscar</button>
+        </form>
+
+        <!-- Filtros de películas -->
+        <form method="GET" action="/" class="filters-form" style="display: flex; gap: 1rem; align-items: center; margin-bottom: 2rem;">
+            <label for="filter_by" style="font-size: 1rem; color: var(--primary-color); font-weight: bold;">Ordenar por:</label>
+            <select name="filter_by" id="filter_by" style="flex: 1; padding: 0.8rem; border: 1px solid #ccc; border-radius: 5px; font-size: 1rem;">
+            <option value="">Seleccionar</option>
+            <option value="popular">Populares</option>
+            <option value="top_rated">Mejor valoradas</option>
+            <option value="upcoming">Próximamente</option>
+            </select>
+            <button type="submit" style="background-color: var(--primary-color); color: white; padding: 0.8rem 1.5rem; border: none; border-radius: 5px; font-size: 1rem; cursor: pointer; transition: background-color 0.3s;">Aplicar filtro</button>
+            <button type="button" onclick="window.location.href='/'" style="background-color: var(--accent-color); color: white; padding: 0.8rem 1.5rem; border: none; border-radius: 5px; font-size: 1rem; cursor: pointer; transition: background-color 0.3s;">Borrar filtros</button>
+        </form>
+        <!-- Aviso de filtro aplicado -->
+        <div id="filter-alert" style="display: none; position: fixed; top: 0; left: 0; width: 100%; background-color: var(--accent-color); color: white; padding: 1rem; text-align: center; font-size: 1rem; z-index: 200;">
+            Filtro aplicado correctamente
+        </div>
+
+        <script>
+            const urlParams = new URLSearchParams(window.location.search);
+            const filterBy = urlParams.get('filter_by');
+            if (filterBy) {
+            const filterAlert = document.getElementById('filter-alert');
+            filterAlert.style.display = 'block';
+            setTimeout(() => {
+                filterAlert.style.display = 'none';
+            }, 2000);
+            }
+        </script>
+
+        {% if query %}
+        <h1 class="section-title">Resultados de búsqueda "{{ query }}"</h1>
+        {% elif filter_by %}
+        <h1 class="section-title">Películas {{ filter_by|title }} <span class="region-badge">{{ region }}</span></h1>
+        {% else %}
+        <h1 class="section-title">Películas Populares <span class="region-badge">{{ region }}</span></h1>
+        {% endif %}
+        <div class="movies-grid">
+            {% for movie in movies %}
+            <div class="movie-card">
+                <div class="movie-image" style="background-image: url('{{ movie.image_url }}');"></div>
+                <div class="card-content">
+                    <h2 class="card-title">{{ movie.title }}</h2>
+                    <p class="card-overview">{{ movie.overview }}</p>
+                    <div class="rating">
+                        <span class="rating-number">{{ movie.vote_average }}/10</span>
+                        <span class="rating-stars">
+                            {% for i in range(movie.vote_average|int) %} ★ {% endfor %}
+                            {% for i in range(10 - movie.vote_average|int) %} ☆ {% endfor %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Controles de paginación -->
+        <div class="pagination">
+            {% if page > 1 %}
+            <a href="/?page={{ page - 1 }}" class="pagination-btn">Anterior</a>
+            {% endif %}
+            <span>Página {{ page }} de {{ total_pages }}</span>
+            {% if page < total_pages %}
+            <a href="/?page={{ page + 1 }}" class="pagination-btn">Siguiente</a>
+            {% endif %}
+        </div>
+        
+        <h1 class="section-title">Últimas Noticias de Cine</h1>
+        <div class="news-grid">
+            {% for article in news %}
+            <div class="news-card">
+                <div class="card-content">
+                    <h2 class="card-title"><a href="{{ article.url }}" target="_blank">{{ article.title }}</a></h2>
+                    <p class="card-overview">{{ article.description }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>        
+    </main>
+    
+    <footer>
+        <p>© 2025 CineNews - Todas las películas y noticias de cine en un solo lugar</p>
+    </footer>
+
+    <button id="back-to-top" onclick="scrollToTop()">↑</button>
+
+    <script>
+        const backToTopButton = document.getElementById('back-to-top');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 200) { // Mostrar después de 200px de desplazamiento
+                backToTopButton.style.display = 'block';
+            } else {
+                backToTopButton.style.display = 'none';
+            }
+        });
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+    </script>
+
+</body>
+</html>
