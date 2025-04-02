@@ -136,6 +136,21 @@
         #back-to-top:hover {
             background-color: var(--accent-color);
         }
+        .movie-meta {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        .meta-item {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+        .meta-item.rating {
+            background-color: var(--accent-color);
+        }
     </style>
 </head>
 <body>
@@ -171,8 +186,21 @@
             <div class="movie-card">
                 <div class="movie-image" style="background-image: url('{{ movie.image_url }}');"></div>
                 <div class="card-content">
-                    <h2 class="card-title">{{ movie.title }}</h2>
+                    <h2 class="card-title">
+                        {% if movie.omdb_data and movie.omdb_data.imdb_id %}
+                            <a href="/movie/{{ movie.omdb_data.imdb_id }}">{{ movie.title }}</a>
+                        {% else %}
+                            {{ movie.title }}
+                        {% endif %}
+                    </h2>
+                    
                     <p class="card-overview">{{ movie.overview }}</p>
+                    {% if movie.omdb_data %}
+                        <div class="movie-meta">
+                        <span class="meta-item">IMDB: {{ movie.omdb_data.imdb_rating }}</span>
+                        <span class="meta-item">{{ movie.omdb_data.runtime }}</span>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
             {% endfor %}

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ movie.Title }} - CineNews</title>
+    <style>
+        /* Usa los mismos estilos que en index.html */
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #e74c3c;
+            --light-bg: #f8f9fa;
+            --dark-text: #333;
+            --light-text: #fff;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: var(--light-bg);
+            color: var(--dark-text);
+            line-height: 1.6;
+        }
+        header {
+            background-color: var(--primary-color);
+            color: var(--light-text);
+            padding: 1rem 0;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        .logo span {
+            color: var(--accent-color);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .movie-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        .movie-poster {
+            flex: 0 0 300px;
+        }
+        .movie-poster img {
+            width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .movie-info {
+            flex: 1;
+            min-width: 300px;
+        }
+        .movie-title {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        .movie-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .meta-item {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        .meta-item.rating {
+            background-color: var(--accent-color);
+        }
+        .movie-plot {
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+        }
+        .details-list {
+            margin-top: 1.5rem;
+        }
+        .details-list dt {
+            font-weight: bold;
+            margin-top: 0.5rem;
+            color: var(--primary-color);
+        }
+        footer {
+            background-color: var(--primary-color);
+            color: var(--light-text);
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="/" class="logo" style="text-decoration: none; color: inherit;">Cine<span>News</span></a>
+    </header>
+    
+    <main class="container">
+        <div class="movie-details">
+            <div class="movie-poster">
+                <img src="{{ movie.Poster }}" alt="{{ movie.Title }} poster">
+            </div>
+            <div class="movie-info">
+                <h1 class="movie-title">{{ movie.Title }} ({{ movie.Year }})</h1>
+                <div class="movie-meta">
+                    <span class="meta-item">{{ movie.Rated }}</span>
+                    <span class="meta-item">{{ movie.Runtime }}</span>
+                    <span class="meta-item">{{ movie.Genre }}</span>
+                    <span class="meta-item rating">IMDB: {{ movie.imdbRating }}</span>
+                </div>
+                <p class="movie-plot">{{ movie.Plot }}</p>
+                
+                <div class="details-list">
+                    <dl>
+                        <dt>Director:</dt>
+                        <dd>{{ movie.Director }}</dd>
+                        
+                        <dt>Reparto:</dt>
+                        <dd>{{ movie.Actors }}</dd>
+                        
+                        <dt>Premios:</dt>
+                        <dd>{{ movie.Awards }}</dd>
+                        
+                        <dt>Idioma:</dt>
+                        <dd>{{ movie.Language }}</dd>
+                        
+                        <dt>País:</dt>
+                        <dd>{{ movie.Country }}</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <p>© 2025 CineNews - Todas las películas y noticias de cine en un solo lugar</p>
+    </footer>
+</body>
+</html>

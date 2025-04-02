@@ -7,7 +7,7 @@ app = Flask(__name__)
 TMDB_API_KEY = 'a3c16888d396e8fae0f254dfd041fd91'
 MEDIASTACK_API_KEY = '0309e45842f5b810c87be862ffbaa671'
 IPINFO_API_KEY = '640ab7862656e8'
-
+OMDB_API_KEY = 'd56c1a79'
 @app.route('/')
 def home():
     # Obtener el número de página desde la URL (por defecto, página 1)
@@ -17,7 +17,7 @@ def home():
     # Obtener ubicación del usuario y código de país
     ipinfo_url = f"https://ipinfo.io/json?token={IPINFO_API_KEY}"
     location_response = requests.get(ipinfo_url).json()
-    region = location_response.get('country', 'US')  # Código de país (por ejemplo, 'MX')
+    region = location_response.get('country', 'US')  # Código de país (ej, 'MX')
 
     # URL base para obtener películas populares con paginación y filtros
     tmdb_url = f"https://api.themoviedb.org/3/movie/popular?api_key={TMDB_API_KEY}&language=en-US&region={region}&page={page}"
@@ -74,6 +74,22 @@ def search():
 
     # Agregar URL de imágenes a las películas
     for movie in movies:
+        omdb_url = f"http://www.omdbapi.com/?apikey={OMDB_API_KEY}&t={movie['title']}"
+        
+        try:
+            omdb_response = requests.get(omdb_url).json()
+            if omdb_response.get('Response') == 'True':
+                # Añadimos los datos adicionales de OMDB a la película
+                movie['omdb_data'] = {
+                    'imdb_rating': omdb_response.get('imdbRating', 'N/A'),
+                    'director': omdb_response.get('Director', 'N/A'),
+                    'actors': omdb_response.get('Actors', 'N/A'),
+                    'runtime': omdb_response.get('Runtime', 'N/A'),
+                    'imdb_id': omdb_response.get('imdbID', '')
+                }
+        except:
+            # Si hay un error con OMDB, ps le vale madre sigue jalando
+            pass
         movie['image_url'] = f"https://image.tmdb.org/t/p/w500{movie.get('poster_path', '')}"
 
     # Renderizar la página de resultados de búsqueda
@@ -83,6 +99,18 @@ def search():
         query=query,
         error=None
     )
+
+
+@app.route('/movie/<imdb_id>')
+def movie_details(imdb_id):
+    # Obtenemos detalles completos de OMDB usando el IMDB ID
+    omdb_url = f"http://www.omdbapi.com/?apikey={OMDB_API_KEY}&i={imdb_id}&plot=full"
+    omdb_response = requests.get(omdb_url).json()
+    
+    if omdb_response.get('Response') == 'True':
+        return render_template('movie_details.html', movie=omdb_response)
+    else:
+        return render_template('error.html', message="Película no encontrada")
 
 if __name__ == '__main__':
     app.run(debug=True)
