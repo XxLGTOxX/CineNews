@@ -176,19 +176,19 @@
         </div>
 
         <script>
-            const urlParams = new URLSearchParams(window.location.search);
-            const filterBy = urlParams.get('filter_by');
+            const urlParams = new URLSearchParams(window.location.search); //Encuentra el parametro de search de la URL el que viene despues de la "?"
+            const filterBy = urlParams.get('filter_by'); //Obtiene un valor del option select
             if (filterBy) {
-            const filterAlert = document.getElementById('filter-alert');
+            const filterAlert = document.getElementById('filter-alert');  //Saca el div para mandar la alerta
             filterAlert.style.display = 'block';
             setTimeout(() => {
-                filterAlert.style.display = 'none';
+                filterAlert.style.display = 'none'; // La muestra por 2 segundos
             }, 2000);
             }
         </script>
 
         {% if query %}
-        <h1 class="section-title">Resultados de búsqueda "{{ query }}"</h1>
+        <h1 class="section-title">Resultados de búsqueda "{{ query }}"</h1> <!-- Si hubo querito boom-->
         {% elif filter_by %}
         <h1 class="section-title">Películas {{ filter_by|title }} <span class="region-badge">{{ region }}</span></h1>
         {% else %}
@@ -252,7 +252,7 @@
                 backToTopButton.style.display = 'none';
             }
         });
-        function scrollToTop() {
+        function scrollToTop() { //Esto nomas para que se suba hasta el top 
             window.scrollTo({
                 top: 0,
                 behavior: 'smooth'
